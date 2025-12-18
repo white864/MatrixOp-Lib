@@ -38,3 +38,42 @@ void multiply(Matrix A, Matrix B, Matrix *res) {
         }
     }
 }
+
+double determinant(Matrix A) {
+    return A.data[0][0]*(A.data[1][1]*A.data[2][2] - A.data[1][2]*A.data[2][1]) -
+           A.data[0][1]*(A.data[1][0]*A.data[2][2] - A.data[1][2]*A.data[2][0]) +
+           A.data[0][2]*(A.data[1][0]*A.data[2][1] - A.data[1][1]*A.data[2][0]);
+}
+
+
+void adjoint(Matrix A, Matrix *res) {
+    res->data[0][0] = (A.data[1][1]*A.data[2][2] - A.data[1][2]*A.data[2][1]);
+    res->data[0][1] = -(A.data[0][1]*A.data[2][2] - A.data[0][2]*A.data[2][1]);
+    res->data[0][2] = (A.data[0][1]*A.data[1][2] - A.data[0][2]*A.data[1][1]);
+    res->data[1][0] = -(A.data[1][0]*A.data[2][2] - A.data[1][2]*A.data[2][0]);
+    res->data[1][1] = (A.data[0][0]*A.data[2][2] - A.data[0][2]*A.data[2][0]);
+    res->data[1][2] = -(A.data[0][0]*A.data[1][2] - A.data[0][2]*A.data[1][0]);
+    res->data[2][0] = (A.data[1][0]*A.data[2][1] - A.data[1][1]*A.data[2][0]);
+    res->data[2][1] = -(A.data[0][0]*A.data[2][1] - A.data[0][1]*A.data[2][0]);
+    res->data[2][2] = (A.data[0][0]*A.data[1][1] - A.data[0][1]*A.data[1][0]);
+}
+
+
+int inverse(Matrix A, Matrix *res) {
+	int i,j;
+    double det = determinant(A);
+    if (det == 0) return 0; 
+    Matrix adj;
+    adjoint(A, &adj);
+    for(i=0; i<SIZE; i++)
+        for(j=0; j<SIZE; j++) res->data[i][j] = adj.data[i][j] / det;
+    return 1;
+}
+
+void printMatrix(Matrix A) {
+	int i,j;
+    for(i=0; i<SIZE; i++) {
+        for(j=0; j<SIZE; j++) printf("%.2f\t", A.data[i][j]);
+        printf("\n");
+    }
+}
